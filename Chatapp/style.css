@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000000; /* Dark background */
+    color: #e0e0e0; /* Light text color for contrast */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height to ensure centering */
+}
+
+form {
+    max-width: 300px;
+    padding: 20px;
+    
+    background: #1e1e1e; /* Dark form background */
+    box-shadow: 0 0 15px rgb(0, 5, 142); /* Stronger shadow for depth */
+    border-radius: 8px; /* Rounded corners */
+    width: 300px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    margin: 30px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 18px;
+    padding: 10px 20px;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgb(0, 5, 142);
+    margin-right: 60px;
+}
+
+.navbar a:hover {
+    background-color: #160175;
+}
+
+h2 {
+    color: #e0e0e0;
+    text-align: center;
+}
+.o{
+    display:flex;
+    
+}
+label {
+    margin-bottom: 10px;
+    display: block;
+    color: #ffffff; /* Light text for labels */
+}
+
+input, select, textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #000000; /* Dark input background */
+    border: 1px; /* Subtle border */
+    color: #ffffff; /* Light text in inputs */
+    border-radius: 6px; /* Slightly rounded corners */
+    box-shadow: 0 0 10px rgb(0, 27, 71);
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #160175; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 7px; /* Rounded button corners */
+    cursor: pointer;
+    transition: background 0.3s ease; /* Smooth transition */
+}
+
+button:hover {
+    background: #000123; /* Darker shade on hover */
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background: #323232; /* Dark chat background */
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.messages {
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: scroll;
+    background: #2c2c2c; /* Dark background for messages area */
+    padding: 10px;
+    border-radius: 4px; /* Rounded corners */
+}
+
+.messages p {
+    margin: 10px 0;
+    padding: 10px;
+    background: #3a3a3a; /* Slightly lighter background for messages */
+    border-radius: 5px;
+    color: #696969; /* Light text color */
+}
+
+.messages::-webkit-scrollbar {
+    width: 10px;
+}
+
+.user-container::-webkit-scrollbar-track {
+    background-color: #000000; /* Black background for scrollbar track */
+    border-radius: 9px;
+}
+
+.user-container::-webkit-scrollbar-thumb {
+    background-color: #333333; /* Dark gray scrollbar thumb */
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff; /* Link color */
+}
+
+a:hover {
+    text-decoration: underline;
+}
