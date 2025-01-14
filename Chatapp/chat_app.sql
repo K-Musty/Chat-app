@@ -137,6 +137,11 @@ ALTER TABLE `users`
 ALTER TABLE `messages`
   ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
+  ALTER TABLE `messages`
+ADD COLUMN `translated_message` text DEFAULT NULL AFTER `message`,
+ADD COLUMN `target_language` varchar(10) DEFAULT NULL AFTER `translated_message`;
+
+
 --
 -- Constraints for table `reports`
 --

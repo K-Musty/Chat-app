@@ -17,11 +17,6 @@ if (!$selected_user_id) {
     exit();
 }
 
-// Load the selected language (default is 'en')
-$lang = isset($_SESSION['language']) ? $_SESSION['language'] : 'en';
-$translations = include("lang_$lang.php");
-
-// Handle sending a message or clearing chat
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['clear_chat'])) {
         // Clear chat between current user and selected user
@@ -30,20 +25,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $stmt->close();
     } else {
-        // Handle sending a message
-        $message = trim($_POST['message']);
-        $recipient_id = intval($_POST['recipient_id']); // Ensure it's an integer
+        // Check if 'message' and 'recipient_id' are set in POST
+        if (isset($_POST['message']) && isset($_POST['recipient_id'])) {
+            $message = trim($_POST['message']);
+            $recipient_id = intval($_POST['recipient_id']); // Ensure it's an integer
 
-        if ($message !== '') {
-            $stmt = $conn->prepare("INSERT INTO messages (user_id, message, recipient_id) VALUES (?, ?, ?)");
-            $stmt->bind_param("isi", $user_id, $message, $recipient_id);
-            $stmt->execute();
-            $stmt->close();
-        }
+            if ($message !== '') {
+                $stmt = $conn->prepare("INSERT INTO messages (user_id, message, recipient_id) VALUES (?, ?, ?)");
+                $stmt->bind_param("isi", $user_id, $message, $recipient_id);
+                $stmt->execute();
+                $stmt->close();
+            }
+        } 
     }
 }
 
-// Fetch messages between the current user and the selected user
+
+
+// Load the selected language (default is 'en')
+$lang = isset($_SESSION['language']) ? $_SESSION['language'] : 'en';
+$translations = include("lang_$lang.php");
+
+// Handle translation when the "Translate Text" button is clicked
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['translate_text'])) {
+    // Fetch the latest message from the database
+    $stmt = $conn->prepare("SELECT message FROM messages WHERE user_id = ? AND recipient_id = ? ORDER BY timestamp DESC LIMIT 1");
+    $stmt->bind_param("ii", $user_id, $selected_user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $latest_message = $row['message'];
+
+        // Call the Python script to translate the message
+        $translated_message = shell_exec("python translate.py " . escapeshellarg($latest_message));
+
+        // Display the translated message
+        $translated_message = nl2br(htmlspecialchars($translated_message));
+        echo "<div class='message-left'>$translated_message</div>";
+    } else {
+        echo "No messages to translate.";
+    }
+
+    $stmt->close();
+}
+
+
+
+// Fetch all messages between the current user and the selected user
 $stmt = $conn->prepare("
     SELECT u1.username AS sender, u2.username AS recipient, m.message, m.timestamp, m.user_id 
     FROM messages m
@@ -65,8 +95,6 @@ $recipient_result = $stmt_recipient->get_result();
 $recipient_row = $recipient_result->fetch_assoc();
 $recipient_username = $recipient_row ? $recipient_row['username'] : 'User';
 $stmt_recipient->close();
-
-$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo htmlspecialchars($lang); ?>">
@@ -299,7 +327,16 @@ $stmt->close();
         <form action="chat.php?user=<?php echo htmlspecialchars($selected_user_id); ?>" method="POST">
             <button type="submit" name="clear_chat"><?php echo htmlspecialchars($translations['clear_chat']); ?></button>
         </form>
-            
+    
+
+
+<!-- Form for translating the latest message -->
+<form action="chat.php?user=<?php echo htmlspecialchars($selected_user_id); ?>" method="POST">
+    <button type="submit" name="translate_text"><?php echo htmlspecialchars('Translate Text'); ?></button>
+</form>
+
+<!-- Display messages -->
+<!--  -->
         <a href="logout.php"><?php echo htmlspecialchars($translations['logout']); ?></a>
     </div>
 </body>
